@@ -1,6 +1,8 @@
 from app import app
+from app.models import Patient
 from flask import jsonify
 
 @app.route('/')
 def index():
-    return jsonify({"message":"successfully added"})
+    users = Patient.query.all()
+    return jsonify({"message":"successfully"})
