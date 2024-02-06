@@ -9,6 +9,13 @@ class Patient(db.Model):
     disease = db.Column(db.String(300), nullable=False)
     phone = db.Column(db.String(10), nullable=True)
     appointments = db.relationship('Appointment', backref="patient", lazy=True)
+
+    def __init__(self, name, gender, age, disease, phone):
+        self.name = name
+        self.gender = gender
+        self.age = age
+        self.disease =disease
+        self.phone = phone
     
     def __repr__(self):
         return f'<Patient {self.name}>'
