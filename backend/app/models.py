@@ -13,6 +13,14 @@ class Patient(db.Model):
     def __repr__(self):
         return f'<Patient {self.name}>'
 
+    def format_to_json(self):
+        return { 'id' : self.id,
+            'name' : self.name,
+            'age' : self.age,
+            'gender' : self.gender,
+            'disease' : self.disease,
+            'phone' : self.phone }
+
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     appointment_date = db.Column(db.Date, nullable=False)
