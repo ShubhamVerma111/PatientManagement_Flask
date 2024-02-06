@@ -1,6 +1,6 @@
 from app import app, db
 from app.models import Patient
-from flask import jsonify, request
+from flask import jsonify, request, abort
 
 @app.route('/')
 def index():
@@ -11,6 +11,28 @@ def list_patients():
     patients = Patient.query.all()
     patients_list = [patient.format_to_json() for patient in patients]
     return jsonify(patients_list)
+
+@app.route("/patient/<int:patientId>", methods=['get', 'delete', 'patch'])
+def getPatient(patientId):
+    patient = Patient.query.get(patientId)
+    if patient is None:
+        return abort(404, description="patient not fount")
+    elif request.method == "GET" :
+        return jsonify(patient.format_to_json())
+    elif request.method == "DELETE" :
+        db.session.delete(patient)
+        db.session.commit()
+        return {"message":"successfully deleted"}
+    elif request.method == "PATCH":
+        data = request.get_json()
+        patient.name = data["name"]
+        patient.gender = data["gender"]
+        patient.age = data["age"]
+        patient.disease = data["disease"]
+        patient.phone = data["phone"]
+        db.session.commit()
+        return {"message":"successfully Updated"}
+
 
 @app.route('/add_patient', methods=["post"])
 def add_patient():
