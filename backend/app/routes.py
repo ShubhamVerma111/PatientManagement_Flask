@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import Patient
+from app.models import Patient, Appointment
 from flask import jsonify, request, abort
 
 @app.route('/')
@@ -43,3 +43,27 @@ def add_patient():
     if newPatient is None:
         abort(404, description="patient not fount")
     return {"message":"successfully added", 'newPatient':newPatient.format_to_json()}
+
+@app.route('/appointments')
+def list_appointments():
+    appointments = Appointment.query.all()
+    appointments_list = [appointment.format_to_json() for appointment in appointments]
+    return jsonify(appointments_list)
+
+@app.route('/add_appointment', methods=["post"])
+def add_appointment():
+    data = request.get_json()
+    patient_id = data.get('patient_id')
+    date = data.get('date')
+
+    if not patient_id or not date:
+        return jsonify({'message':'missing patient id or date'})
+    
+    patient = Patient.query.get(patient_id)
+    if patient is None:
+        return abort(404, description="patient not fount")
+    
+    appointment = Appointment(appointment_date=date, patient=patient)
+    db.session.add(appointment)
+    db.session.commit()
+    return {"message":"successfully added"}

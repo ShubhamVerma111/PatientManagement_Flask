@@ -35,3 +35,8 @@ class Appointment(db.Model):
     
     def __repr__(self):
         return f'<Appointment {self.id}>'
+
+    def format_to_json(self):
+        return { 'id' : self.id,
+            'appointment_date' : self.appointment_date,
+            'patient_id' : self.patient_id }
