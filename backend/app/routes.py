@@ -54,23 +54,28 @@ def list_appointments():
 def add_appointment():
     data = request.get_json()
     patient_id = data.get('patient_id')
+    slot = data.get('slot')
     date = data.get('date')
 
-    if not patient_id or not date:
-        return jsonify({'message':'missing patient id or date'}), 404
+    if not patient_id or not date or not slot:
+        return jsonify({'message':'missing patient id or date or slot'}), 404
     
     patient = Patient.query.get(patient_id)
     if patient is None:
         return jsonify({'message':"patient not fount"}), 404
 
-    ifPatientHasAppointment = Appointment.query.filter_by(patient_id=patient_id).all()
+    ifPatientHasAppointment = Appointment.query.filter_by(patient_id=patient_id).first()
     if ifPatientHasAppointment:
-        return jsonify({'message':"patient appintment already scheduled"}), 409
+        return jsonify({'message':"patient appointment already scheduled", 'data':ifPatientHasAppointment.format_to_json()}), 409
     
-    appointment = Appointment(appointment_date=date, patient=patient)
+    ifAppointmentSlotBooked = Appointment.query.filter_by(appointment_date=date, slot=slot).all()
+    if ifAppointmentSlotBooked:
+        return jsonify({'message':"appointment slot Booked"}), 409
+
+    appointment = Appointment(appointment_date=date, slot=slot, patient=patient)
     db.session.add(appointment)
     db.session.commit()
-    return {"message":"successfully added"}
+    return jsonify({"message":"appointment successfully added"}), 201
 
 @app.route('/appointment/<int:appointment_id>', methods=["put", "delete"])
 def update_appointment(appointment_id):
@@ -80,9 +85,11 @@ def update_appointment(appointment_id):
  
     if request.method == "PUT":
         new_date = request.get_json().get('new_date')
-        if not new_date:
-            return jsonify({'message':'missing new date'}), 404
+        new_slot = request.get_json().get('new_slot')
+        if not new_date or not new_slot:
+            return jsonify({'message':'missing new date or slot'}), 404
         appointment.appointment_date = new_date
+        appointment.slot = new_slot
         db.session.commit()
         return {"message":"successfully resechudeled appointment"}
 

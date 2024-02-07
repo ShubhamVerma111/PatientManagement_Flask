@@ -31,6 +31,7 @@ class Patient(db.Model):
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     appointment_date = db.Column(db.Date, nullable=False)
+    slot = db.Column(db.Integer, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey(Patient.id), nullable=False)
     
     def __repr__(self):
@@ -39,4 +40,5 @@ class Appointment(db.Model):
     def format_to_json(self):
         return { 'id' : self.id,
             'appointment_date' : self.appointment_date,
+            'slot' : self.slot,
             'patient_id' : self.patient_id }
