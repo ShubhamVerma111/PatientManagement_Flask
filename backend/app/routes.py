@@ -57,13 +57,36 @@ def add_appointment():
     date = data.get('date')
 
     if not patient_id or not date:
-        return jsonify({'message':'missing patient id or date'})
+        return jsonify({'message':'missing patient id or date'}), 404
     
     patient = Patient.query.get(patient_id)
     if patient is None:
-        return abort(404, description="patient not fount")
+        return jsonify({'message':"patient not fount"}), 404
+
+    ifPatientHasAppointment = Appointment.query.filter_by(patient_id=patient_id).all()
+    if ifPatientHasAppointment:
+        return jsonify({'message':"patient appintment already scheduled"}), 409
     
     appointment = Appointment(appointment_date=date, patient=patient)
     db.session.add(appointment)
     db.session.commit()
     return {"message":"successfully added"}
+
+@app.route('/appointment/<int:appointment_id>', methods=["put", "delete"])
+def update_appointment(appointment_id):
+    appointment = Appointment.query.get(appointment_id)
+    if not appointment:
+       return jsonify({'message':"appointment not fount"}), 404
+ 
+    if request.method == "PUT":
+        new_date = request.get_json().get('new_date')
+        if not new_date:
+            return jsonify({'message':'missing new date'}), 404
+        appointment.appointment_date = new_date
+        db.session.commit()
+        return {"message":"successfully resechudeled appointment"}
+
+    elif request.method == "DELETE":
+        db.session.delete(appointment)
+        db.session.commit()
+        return {"message":"successfully canceled appointment"}
