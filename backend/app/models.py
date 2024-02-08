@@ -5,17 +5,13 @@ class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     age = db.Column(db.Integer, nullable=False)
-    gender = db.Column(db.String(10), nullable=True)
     disease = db.Column(db.String(300), nullable=False)
-    phone = db.Column(db.String(10), nullable=True)
     appointments = db.relationship('Appointment', backref="patient", lazy=True)
 
-    def __init__(self, name, gender, age, disease, phone):
+    def __init__(self, name, age, disease):
         self.name = name
-        self.gender = gender
         self.age = age
         self.disease =disease
-        self.phone = phone
     
     def __repr__(self):
         return f'<Patient {self.name}>'
@@ -24,9 +20,7 @@ class Patient(db.Model):
         return { 'id' : self.id,
             'name' : self.name,
             'age' : self.age,
-            'gender' : self.gender,
-            'disease' : self.disease,
-            'phone' : self.phone }
+            'disease' : self.disease }
 
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,6 +33,6 @@ class Appointment(db.Model):
 
     def format_to_json(self):
         return { 'id' : self.id,
-            'appointment_date' : self.appointment_date,
+            'appointment_date' : self.appointment_date.strftime("%d/%m/%y"),
             'slot' : self.slot,
             'patient_id' : self.patient_id }

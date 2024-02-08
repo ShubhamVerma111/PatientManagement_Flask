@@ -26,10 +26,8 @@ def getPatient(patientId):
     elif request.method == "PATCH":
         data = request.get_json()
         patient.name = data["name"]
-        patient.gender = data["gender"]
         patient.age = data["age"]
         patient.disease = data["disease"]
-        patient.phone = data["phone"]
         db.session.commit()
         return {"message":"successfully Updated"}
 
@@ -37,7 +35,7 @@ def getPatient(patientId):
 @app.route('/add_patient', methods=["post"])
 def add_patient():
     data = request.get_json()
-    newPatient = Patient(data["name"], data["gender"], data["age"], data["disease"], data["phone"])
+    newPatient = Patient(data["name"], data["age"], data["disease"])
     db.session.add(newPatient)
     db.session.commit()
     if newPatient is None:
