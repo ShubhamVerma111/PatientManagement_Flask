@@ -3,7 +3,7 @@ import React from "react";
 export default function Navbar() {
     
     return (
-        <div className="container-fluid px-5 py-3 bg-body-tertiary">
+        <div className="container-fluid px-5 py-3 mb-5 bg-body-tertiary">
             <nav className="navbar navbar-expand-md">
                 <a href="/" className="navbar-brand">
                     <span className="nav-brand">Patient Management</span></a>
@@ -15,7 +15,7 @@ export default function Navbar() {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto">
                         <li className="nav-item">
-                            <a className="nav-link" href="#">Add Patient</a>
+                            <a className="nav-link" href="add_patient">Add Patient</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="/appointments">List Appointments</a>

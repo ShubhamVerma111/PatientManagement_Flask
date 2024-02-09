@@ -26,7 +26,7 @@ export default function AppointmentTable({ setModelData }) {
         setModelData({ type, data })
     }
     return (
-        <div className="mx-5 mt-5">
+        <div className="mx-5">
             <div className="fs-1 text-center mb-2">Appointments</div>
             <table className="table table-striped border ">
                 <thead>

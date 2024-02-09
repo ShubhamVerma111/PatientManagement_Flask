@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import PatientTable from './components/PatientTable';
 import AppointmentTable from './components/AppointmentTable';
 import Model from './components/Model';
+import PatientForm from './components/PatientForm';
 
 function App() {
   const initialModelData = {
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<PatientTable setModelData={setModelData} />} />
           <Route path="/appointments" element={<AppointmentTable setModelData={setModelData} />} />
+          <Route exact path="/add_patient" element={<PatientForm />} />
         </Routes>
 
         <Model modelData={modelData} />
