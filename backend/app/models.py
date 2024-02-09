@@ -32,7 +32,9 @@ class Appointment(db.Model):
         return f'<Appointment {self.id}>'
 
     def format_to_json(self):
+        patient = Patient.query.get(self.patient_id)
         return { 'id' : self.id,
             'appointment_date' : self.appointment_date.strftime("%d/%m/%y"),
             'slot' : self.slot,
+            'patient_name' : patient.name,
             'patient_id' : self.patient_id }
