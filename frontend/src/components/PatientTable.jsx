@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function PatientTable() {
+export default function PatientTable({ setModelData }) {
     const data = [
         {
             "age": 32,
@@ -27,6 +27,14 @@ export default function PatientTable() {
             "phone": "453213"
         }
     ]
+    function handelPatientDelete(patient) {
+        const type = "action";
+        const data = {
+            'message': `Do you want to delete ${patient['name']}?`,
+            'id': patient.id
+        }
+        setModelData({ type, data })
+    }
     return (
         <div className="mx-5 mt-5">
             <div className="fs-1 text-center mb-2">Our Patients</div>
@@ -48,9 +56,9 @@ export default function PatientTable() {
                                 <td>{item['disease']}</td>
                                 <td>{item['age']}</td>
                                 <td>
-                                    <a className="me-3 text-dark" href=""><i class="far fa-edit"></i></a>
-                                    <a className="me-3 text-dark" href=""><i class="far fa-address-book"></i></a>
-                                    <a className="text-danger" href=""><i class="fas fa-trash-alt"></i></a>
+                                    <a className="me-3 text-dark" href=""><i className="far fa-edit"></i></a>
+                                    <a className="me-3 text-dark" href=""><i className="far fa-address-book"></i></a>
+                                    <span className="text-danger" onClick={() => { handelPatientDelete(item) }} data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i className="fas fa-trash-alt"></i></span>
                                 </td>
                             </tr>
                         })

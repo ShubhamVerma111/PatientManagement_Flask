@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function AppointmentTable() {
+export default function AppointmentTable({ setModelData }) {
     const data = [
         {
             "appointment_date": "15/02/24",
@@ -17,6 +17,14 @@ export default function AppointmentTable() {
             "slot": 1
         }
     ]
+    function handelAppointmentDelete(appointment) {
+        const type = "action";
+        const data = {
+            'message': `Would you like to cancel ${appointment['patient_name']}'s appointment?`,
+            'id': appointment.id
+        }
+        setModelData({ type, data })
+    }
     return (
         <div className="mx-5 mt-5">
             <div className="fs-1 text-center mb-2">Appointments</div>
@@ -38,9 +46,8 @@ export default function AppointmentTable() {
                                 <td>{item['appointment_date']}</td>
                                 <td>{item['slot']}</td>
                                 <td>
-                                    <a className="me-3 text-dark" href=""><i class="far fa-edit"></i></a>
-                                    <a className="me-3 text-dark" href=""><i class="far fa-address-book"></i></a>
-                                    <a className="text-danger" href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fas fa-trash-alt"></i></a>
+                                    <a className="me-3 text-dark" href=""><i className="far fa-edit"></i></a>
+                                    <span className="text-danger" onClick={() => { handelAppointmentDelete(item) }} data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i className="fas fa-trash-alt"></i></span>
                                 </td>
                             </tr>
                         })

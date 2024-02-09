@@ -7,18 +7,24 @@ import AppointmentTable from './components/AppointmentTable';
 import Model from './components/Model';
 
 function App() {
-
+  const initialModelData = {
+    'type': 'Error',
+    'data': {
+      'message': "some Error Message"
+    }
+  }
+  const [modelData, setModelData] = useState(initialModelData)
   return (
     <div className="App">
       <Router>
         <Navbar />
 
         <Routes>
-          <Route exact path="/" element={<PatientTable />} />
-          <Route path="/appointments" element={<AppointmentTable />} />
+          <Route exact path="/" element={<PatientTable setModelData={setModelData} />} />
+          <Route path="/appointments" element={<AppointmentTable setModelData={setModelData} />} />
         </Routes>
-        
-        <Model />
+
+        <Model modelData={modelData} />
       </Router>
     </div>
   );
