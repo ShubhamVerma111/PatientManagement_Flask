@@ -1,32 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function PatientTable({ setModelData }) {
-    const data = [
-        {
-            "age": 32,
-            "disease": "fever",
-            "gender": "male",
-            "id": 2,
-            "name": "Karan Yadav",
-            "phone": "948435"
-        },
-        {
-            "age": 20,
-            "disease": "low bp",
-            "gender": "female",
-            "id": 3,
-            "name": "Swati Singh",
-            "phone": "900235"
-        },
-        {
-            "age": 23,
-            "disease": "dengue",
-            "gender": "Male",
-            "id": 4,
-            "name": "Rohit Dale",
-            "phone": "453213"
-        }
-    ]
+    const [data, setData] = useState([]);
     function handelPatientDelete(patient) {
         const type = "action";
         const data = {
@@ -35,6 +10,20 @@ export default function PatientTable({ setModelData }) {
         }
         setModelData({ type, data })
     }
+
+    useEffect(()=>{
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/list_patients');
+                const data = await response.json()
+                setData(data);
+            } catch (error) {
+                console.error('Error in fetch : ', error);
+            }
+        };
+        fetchData();
+    },[])
+
     return (
         <div className="mx-5">
             <div className="fs-1 text-center mb-2">Our Patients</div>
