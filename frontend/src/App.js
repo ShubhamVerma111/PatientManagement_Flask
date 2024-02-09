@@ -6,6 +6,7 @@ import PatientTable from './components/PatientTable';
 import AppointmentTable from './components/AppointmentTable';
 import Model from './components/Model';
 import PatientForm from './components/PatientForm';
+import AppointmentForm from './components/AppointmentForm';
 
 function App() {
   const initialModelData = {
@@ -24,6 +25,7 @@ function App() {
           <Route exact path="/" element={<PatientTable setModelData={setModelData} />} />
           <Route path="/appointments" element={<AppointmentTable setModelData={setModelData} />} />
           <Route exact path="/add_patient" element={<PatientForm />} />
+          <Route exact path="/add_appointment" element={<AppointmentForm />} />
         </Routes>
 
         <Model modelData={modelData} />

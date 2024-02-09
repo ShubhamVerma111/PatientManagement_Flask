@@ -21,7 +21,7 @@ export default function Navbar() {
                             <a className="nav-link" href="/appointments">List Appointments</a>
                         </li>
                         <li className="nav-item">
-                            <a href="#" className="nav-link">Schedule Appointment</a>
+                            <a href="/add_appointment" className="nav-link">Schedule Appointment</a>
                         </li>
                     </ul>
                 </div>
