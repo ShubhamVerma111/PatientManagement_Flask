@@ -1,6 +1,6 @@
 from app import app, db
 from app.models import Patient, Appointment
-from flask import jsonify, request, abort
+from flask import jsonify, request
 
 @app.route('/')
 def index():
@@ -16,7 +16,7 @@ def list_patients():
 def getPatient(patientId):
     patient = Patient.query.get(patientId)
     if patient is None:
-        return abort(404, description="patient not fount")
+        return jsonify({'message':"patient not fount"}), 404
     elif request.method == "GET" :
         return jsonify(patient.format_to_json())
     elif request.method == "DELETE" :
@@ -39,7 +39,7 @@ def add_patient():
     db.session.add(newPatient)
     db.session.commit()
     if newPatient is None:
-        abort(404, description="patient not fount")
+        return jsonify({'message':"patient not fount"}), 404
     return {"message":"successfully added", 'newPatient':newPatient.format_to_json()}
 
 @app.route('/appointments')
