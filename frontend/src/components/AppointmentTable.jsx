@@ -1,22 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function AppointmentTable({ setModelData }) {
-    const data = [
-        {
-            "appointment_date": "15/02/24",
-            "id": 1,
-            "patient_id": 2,
-            "patient_name": "Krishna Yadav",
-            "slot": 1
-        },
-        {
-            "appointment_date": "20/02/24",
-            "id": 2,
-            "patient_id": 1,
-            "patient_name": "Swati Sharma",
-            "slot": 1
-        }
-    ]
+    const [data, setData] = useState([]);
     function handelAppointmentDelete(appointment) {
         const type = "action";
         const data = {
@@ -25,6 +10,20 @@ export default function AppointmentTable({ setModelData }) {
         }
         setModelData({ type, data })
     }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/appointments');
+                const data = await response.json()
+                setData(data);
+            } catch (error) {
+                console.error('Error in fetch : ', error);
+            }
+        };
+        fetchData();
+    }, [])
+
     return (
         <div className="mx-5">
             <div className="fs-1 text-center mb-2">Appointments</div>
