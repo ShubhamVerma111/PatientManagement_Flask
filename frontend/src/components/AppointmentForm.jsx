@@ -24,14 +24,13 @@ export default function AppointmentForm({ patientData, setModelData, toggleModel
             try {
                 let response;
                 if (appointment_id) {
-                    console.log(formData);
                     response = await fetch(`http://localhost:5000/appointment/${appointment_id}`, {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(formData)
                     });
-                }
-                else {
+                } else {
+                    console.log(formData);
                     response = await fetch("http://localhost:5000/add_appointment", {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -85,13 +84,13 @@ export default function AppointmentForm({ patientData, setModelData, toggleModel
                 <div className="row mb-3">
                     <label htmlFor="date" className="col-sm-2 col-form-label">Date :</label>
                     <div className="col-sm-10">
-                        <input type="date" className="form-control" value={formData['appointment_date']} onChange={(e) => { updateFormData(e) }} name="date" id="appointment_date" />
+                        <input type="date" className="form-control" value={formData['appointment_date']} onChange={(e) => { updateFormData(e) }} name="appointment_date" id="date" />
                     </div>
                 </div>
                 <div className="row mb-3">
                     <label htmlFor="patient" className="col-sm-2 col-form-label">Patient :</label>
                     <div className="col-sm-10">
-                        <select name="patient_id" id="patient" value={formData['patient_id']} onChange={(e) => { updateFormData(e) }} className="form-select">
+                        <select name="patient_id" id="patient" value={formData['patient_id']} onChange={(e) => { updateFormData(e) }} className="form-select" disabled={appointment_id}>
                             <option value=''>(Select Patient)</option>
                             {
                                 patientData.map(patient => <option key={patient['id']} value={patient['id']}>{patient['name']}</option>)

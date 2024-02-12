@@ -57,7 +57,7 @@ def add_appointment():
     data = request.get_json()
     patient_id = data.get('patient_id')
     slot = data.get('slot')
-    date = data.get('date')
+    date = data.get('appointment_date')
 
     if not patient_id or not date or not slot:
         return jsonify({'message':'missing patient id or date or slot'}), 404
@@ -93,6 +93,11 @@ def update_appointment(appointment_id):
         new_slot = request.get_json().get('slot')
         if not new_date or not new_slot:
             return jsonify({'message':'missing new date or slot'}), 404
+
+        ifAppointmentSlotBooked = Appointment.query.filter_by(appointment_date=new_date, slot=new_slot).all()
+        if ifAppointmentSlotBooked:
+            return jsonify({'message':"appointment slot Booked"}), 409
+
         appointment.appointment_date = new_date
         appointment.slot = new_slot
         db.session.commit()
