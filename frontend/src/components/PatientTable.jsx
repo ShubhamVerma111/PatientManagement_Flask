@@ -6,7 +6,7 @@ export default function PatientTable({ setModelData }) {
         const type = "action";
         const data = {
             'message': `Do you want to delete ${patient['name']}?`,
-            'id': patient.id
+            'url': `http://localhost:5000/patient/${patient.id}`
         }
         setModelData({ type, data })
     }
