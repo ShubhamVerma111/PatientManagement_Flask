@@ -12,14 +12,18 @@ def list_patients():
     patients_list = [patient.format_to_json() for patient in patients]
     return jsonify(patients_list)
 
-@app.route("/patient/<int:patientId>", methods=['get', 'delete', 'patch'])
-def getPatient(patientId):
-    patient = Patient.query.get(patientId)
+@app.route("/patient/<int:patient_id>", methods=['get', 'delete', 'patch'])
+def getPatient(patient_id):
+    patient = Patient.query.get(patient_id)
     if patient is None:
         return jsonify({'message':"patient not fount"}), 404
     elif request.method == "GET" :
         return jsonify(patient.format_to_json())
     elif request.method == "DELETE" :
+        ifPatientHasAppointment = Appointment.query.filter_by(patient_id=patient_id).first()
+        if ifPatientHasAppointment:
+            return jsonify({'message':"patient has appointment", 'data':ifPatientHasAppointment.format_to_json()}), 409
+    
         db.session.delete(patient)
         db.session.commit()
         return {"message":"successfully deleted"}
