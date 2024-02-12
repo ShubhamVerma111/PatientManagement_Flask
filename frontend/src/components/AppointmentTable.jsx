@@ -6,7 +6,7 @@ export default function AppointmentTable({ setModelData }) {
         const type = "action";
         const data = {
             'message': `Would you like to cancel ${appointment['patient_name']}'s appointment?`,
-            'id': appointment.id
+            'url': `http://localhost:5000/appointment/${appointment.id}`
         }
         setModelData({ type, data })
     }

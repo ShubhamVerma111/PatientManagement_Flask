@@ -4,18 +4,18 @@ import { useNavigate } from "react-router-dom";
 export default function Model({ modelData }) {
     const navigate = useNavigate();
 
-    async function handelDelete(){
+    async function handelDelete() {
         try {
             let response = await fetch(modelData.data.url, {
                 method: 'DELETE'
             });
             if (response.ok) {
-                navigate('/');
+                window.location.reload();
             }
         } catch (error) {
             console.error('Error in delete : ', error)
         }
-        
+
     }
 
     return (
