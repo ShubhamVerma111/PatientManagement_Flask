@@ -33,7 +33,7 @@ export default function PatientTable({ patientData, setModelData, toggleModel })
                                 <td>{patient['disease']}</td>
                                 <td>{patient['age']}</td>
                                 <td>
-                                    <a className="me-3 text-dark" href=""><i className="far fa-edit"></i></a>
+                                    <a className="me-3 text-dark" href={`/add_patient/${patient.id}`}><i className="far fa-edit"></i></a>
                                     <span className="text-danger" onClick={() => { handelPatientDelete(patient) }}><i className="fas fa-trash-alt"></i></span>
                                 </td>
                             </tr>

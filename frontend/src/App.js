@@ -45,7 +45,9 @@ function App() {
           <Route exact path="/" element={<PatientTable patientData={patientData} setModelData={setModelData} toggleModel={toggleModel}/>} />
           <Route path="/appointments" element={<AppointmentTable setModelData={setModelData} toggleModel={toggleModel}/>} />
           <Route exact path="/add_patient" element={<PatientForm />} />
+          <Route exact path="/add_patient/:patient_id" element={<PatientForm />} />
           <Route exact path="/add_appointment" element={<AppointmentForm patientData={patientData} setModelData={setModelData} toggleModel={toggleModel}/>} />
+          <Route exact path="/add_appointment/:appointment_id" element={<AppointmentForm patientData={patientData} setModelData={setModelData} toggleModel={toggleModel}/>} />
         </Routes>
 
         {showModel && <Model setModelData={setModelData} modelData={modelData} onCloseModel={toggleModel}/>}

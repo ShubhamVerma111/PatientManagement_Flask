@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function AppointmentForm({ patientData, setModelData, toggleModel }) {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ 'date': '', 'patient_id': '', 'slot': '' });
+    const { appointment_id } = useParams();
+    const [formData, setFormData] = useState({ 'appointment_date': '', 'patient_id': '', 'slot': '' });
     const [isMissing, setIsMissing] = useState(false)
 
     function updateFormData(e) {
@@ -17,15 +18,26 @@ export default function AppointmentForm({ patientData, setModelData, toggleModel
 
     async function handelSubmit(e) {
         e.preventDefault();
-        if (formData['date'] == '' || formData['patient_id'] == '' || formData['slot'] == '') setIsMissing(true)
+        if (formData['appointment_date'] == '' || formData['patient_id'] == '' || formData['slot'] == '') setIsMissing(true)
         else {
             setIsMissing(false);
             try {
-                const response = await fetch("http://localhost:5000/add_appointment", {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
+                let response;
+                if (appointment_id) {
+                    console.log(formData);
+                    response = await fetch(`http://localhost:5000/appointment/${appointment_id}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                }
+                else {
+                    response = await fetch("http://localhost:5000/add_appointment", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                }
                 if (response.ok) {
                     navigate('/appointments');
                 } else {
@@ -45,13 +57,35 @@ export default function AppointmentForm({ patientData, setModelData, toggleModel
         }
     }
 
+    const formatDate = (dateStr) => {
+        const [day, month, year] = dateStr.split('/');
+        return `20${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+    }
+
+    useEffect(() => {
+        async function fetchData(appointment_id) {
+            try {
+                const response = await fetch(`http://localhost:5000/appointment/${appointment_id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setFormData({ ...data, 'appointment_date': formatDate(data['appointment_date']) });
+                } else {
+                    console.error("error in fetch appointment");
+                }
+            } catch (error) {
+                console.error('error in fetch', error);
+            }
+        }
+        if (appointment_id) fetchData(appointment_id);
+    }, [appointment_id])
+
     return (
         <div className="d-flex justify-content-center">
             <form className="w-50">
                 <div className="row mb-3">
                     <label htmlFor="date" className="col-sm-2 col-form-label">Date :</label>
                     <div className="col-sm-10">
-                        <input type="date" className="form-control" value={formData['date']} onChange={(e) => { updateFormData(e) }} name="date" id="date" />
+                        <input type="date" className="form-control" value={formData['appointment_date']} onChange={(e) => { updateFormData(e) }} name="date" id="appointment_date" />
                     </div>
                 </div>
                 <div className="row mb-3">

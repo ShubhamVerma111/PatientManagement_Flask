@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from 'react-router-dom'
 
 export default function PatientForm() {
     const navigate = useNavigate();
+    const { patient_id } = useParams();
     const [formData, setFormData] = useState({
         'name': '', 'age': '', 'disease': ''
     })
@@ -22,11 +23,20 @@ export default function PatientForm() {
         else {
             setIsMissing(false)
             try {
-                const response = await fetch("http://localhost:5000/add_patient", {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
+                let response;
+                if (patient_id) {
+                    response = await fetch(`http://localhost:5000/patient/${patient_id}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                } else {
+                    response = await fetch("http://localhost:5000/add_patient", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                }
                 if (response.ok) {
                     navigate('/');
                 }
@@ -36,6 +46,23 @@ export default function PatientForm() {
 
         }
     }
+
+    useEffect(() => {
+        async function fetchData(patient_id) {
+            try {
+                const response = await fetch(`http://localhost:5000/patient/${patient_id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setFormData(data);
+                } else {
+                    console.error("error in fetch patient");
+                }
+            } catch (error) {
+                console.error('error in fetch', error);
+            }
+        }
+        if (patient_id) fetchData(patient_id);
+    }, [patient_id])
 
     return (
         <div className="d-flex justify-content-center">

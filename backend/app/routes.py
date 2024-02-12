@@ -79,15 +79,18 @@ def add_appointment():
     db.session.commit()
     return jsonify({"message":"appointment successfully added"}), 201
 
-@app.route('/appointment/<int:appointment_id>', methods=["put", "delete"])
+@app.route('/appointment/<int:appointment_id>', methods=["get","patch", "delete"])
 def update_appointment(appointment_id):
     appointment = Appointment.query.get(appointment_id)
     if not appointment:
        return jsonify({'message':"appointment not fount"}), 404
+
+    if request.method == "GET":
+        return jsonify(appointment.format_to_json())
  
-    if request.method == "PUT":
-        new_date = request.get_json().get('new_date')
-        new_slot = request.get_json().get('new_slot')
+    elif request.method == "PATCH":
+        new_date = request.get_json().get('appointment_date')
+        new_slot = request.get_json().get('slot')
         if not new_date or not new_slot:
             return jsonify({'message':'missing new date or slot'}), 404
         appointment.appointment_date = new_date
