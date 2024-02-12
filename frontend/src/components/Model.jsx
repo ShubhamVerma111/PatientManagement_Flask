@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Model({ modelData, onCloseModel }) {
+export default function Model({ modelData, setModelData, onCloseModel }) {
 
     async function handelDelete() {
         try {
@@ -9,6 +9,15 @@ export default function Model({ modelData, onCloseModel }) {
             });
             if (response.ok) {
                 window.location.reload();
+            } else if (response.status === 409) {
+                let res = await response.json();
+                let message = res.message;
+                setModelData({
+                    'type': 'Error',
+                    'data': {
+                        message
+                    }
+                })
             }
         } catch (error) {
             console.error('Error in delete : ', error)
@@ -17,7 +26,7 @@ export default function Model({ modelData, onCloseModel }) {
     }
 
     return (
-        <div className="modal fade show bg-dark bg-opacity-50" style={{display:'block'}} tabIndex={-1} role="dialog">
+        <div className="modal fade show bg-dark bg-opacity-50" style={{ display: 'block' }} tabIndex={-1} role="dialog">
             <div className="modal-dialog" role="document">
                 <div className="modal-content">
                     <div className="modal-header">

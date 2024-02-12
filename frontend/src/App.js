@@ -48,7 +48,7 @@ function App() {
           <Route exact path="/add_appointment" element={<AppointmentForm patientData={patientData} setModelData={setModelData} toggleModel={toggleModel}/>} />
         </Routes>
 
-        {showModel && <Model modelData={modelData} onCloseModel={toggleModel}/>}
+        {showModel && <Model setModelData={setModelData} modelData={modelData} onCloseModel={toggleModel}/>}
       </Router>
     </div>
   );
