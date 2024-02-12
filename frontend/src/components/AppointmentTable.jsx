@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export default function AppointmentTable({ setModelData }) {
+export default function AppointmentTable({ setModelData, toggleModel }) {
     const [data, setData] = useState([]);
     function handelAppointmentDelete(appointment) {
         const type = "action";
@@ -9,6 +9,7 @@ export default function AppointmentTable({ setModelData }) {
             'url': `http://localhost:5000/appointment/${appointment.id}`
         }
         setModelData({ type, data })
+        toggleModel();
     }
 
     useEffect(() => {
@@ -46,7 +47,7 @@ export default function AppointmentTable({ setModelData }) {
                                 <td>{item['slot']}</td>
                                 <td>
                                     <a className="me-3 text-dark" href=""><i className="far fa-edit"></i></a>
-                                    <span className="text-danger" onClick={() => { handelAppointmentDelete(item) }} data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i className="fas fa-trash-alt"></i></span>
+                                    <span className="text-danger" onClick={() => { handelAppointmentDelete(item) }}><i className="fas fa-trash-alt"></i></span>
                                 </td>
                             </tr>
                         })

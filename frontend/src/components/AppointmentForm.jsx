@@ -1,48 +1,49 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function AppointmentForm() {
-    const [formData, setFormData] = useState({
-        'date': '', 'patient': 3, 'slot': ''
-    })
+export default function AppointmentForm({ patientData, setModelData, toggleModel }) {
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({ 'date': '', 'patient_id': '', 'slot': '' });
+    const [isMissing, setIsMissing] = useState(false)
+
     function updateFormData(e) {
-        setFormData(pre => { 
+        setFormData(pre => {
             return {
                 ...pre,
-                [e.target.name] : e.target.value,
+                [e.target.name]: e.target.value,
             }
         });
     }
 
-    function handelSubmit(){
-        console.log(formData)
-    }
-
-    const data = [
-        {
-            "age": 32,
-            "disease": "fever",
-            "gender": "male",
-            "id": 2,
-            "name": "Karan Yadav",
-            "phone": "948435"
-        },
-        {
-            "age": 20,
-            "disease": "low bp",
-            "gender": "female",
-            "id": 3,
-            "name": "Swati Singh",
-            "phone": "900235"
-        },
-        {
-            "age": 23,
-            "disease": "dengue",
-            "gender": "Male",
-            "id": 4,
-            "name": "Rohit Dale",
-            "phone": "453213"
+    async function handelSubmit(e) {
+        e.preventDefault();
+        if (formData['date'] == '' || formData['patient_id'] == '' || formData['slot'] == '') setIsMissing(true)
+        else {
+            setIsMissing(false);
+            try {
+                const response = await fetch("http://localhost:5000/add_appointment", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                if (response.ok) {
+                    navigate('/appointments');
+                } else {
+                    let res = await response.json();
+                    let message = res.message
+                    setModelData({
+                        'type': 'Error',
+                        'data': {
+                            message
+                        }
+                    })
+                    toggleModel();
+                }
+            } catch (error) {
+                console.error('Error posting data : ', error);
+            }
         }
-    ]
+    }
 
     return (
         <div className="d-flex justify-content-center">
@@ -56,9 +57,10 @@ export default function AppointmentForm() {
                 <div className="row mb-3">
                     <label htmlFor="patient" className="col-sm-2 col-form-label">Patient :</label>
                     <div className="col-sm-10">
-                        <select name="patient" id="patient" value={formData['patient']} onChange={(e) => { updateFormData(e) }} className="form-select">
+                        <select name="patient_id" id="patient" value={formData['patient_id']} onChange={(e) => { updateFormData(e) }} className="form-select">
+                            <option value=''>(Select Patient)</option>
                             {
-                                data.map(patient => <option key={patient['id']} value={patient['id']}>{patient['name']}</option>)
+                                patientData.map(patient => <option key={patient['id']} value={patient['id']}>{patient['name']}</option>)
                             }
                         </select>
                     </div>
@@ -67,6 +69,7 @@ export default function AppointmentForm() {
                     <label htmlFor="slot" className="col-sm-2 col-form-label">Slot :</label>
                     <div className="col-sm-10">
                         <select name="slot" id="slot" value={formData['slot']} onChange={(e) => { updateFormData(e) }} className="form-select">
+                            <option value=''>(choose slot)</option>
                             <option value={1}>Slot 1</option>
                             <option value={2}>Slot 2</option>
                             <option value={3}>Slot 3</option>
@@ -76,6 +79,7 @@ export default function AppointmentForm() {
                         </select>
                     </div>
                 </div>
+                {isMissing && <p className="text-danger text-center">Please fill all the fields</p>}
                 <button type="button" onClick={handelSubmit} className="btn btn-primary">Submit</button>
             </form>
         </div>
